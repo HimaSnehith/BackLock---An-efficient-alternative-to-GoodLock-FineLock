@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This theme file is updated to use a modern Material3 parent theme,
+    which is compatible with Jetpack Compose. This resolves the
+    "Theme.AppCompat.Light.NoActionBar" error.
+-->
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Badlock" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

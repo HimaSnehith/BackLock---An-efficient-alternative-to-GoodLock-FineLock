@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- This group scales the foreground content to fit within the visible area of the adaptive icon -->
+    <group
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:translateX="27"
+        android:translateY="27">
+
+        <!--
+        This path creates the main lock body and shackle,
+        fusing the stylized shapes of a 'G' and 'L'.
+        The 'G' forms the rounded body, and the 'L' forms the shackle.
+        -->
+        <path
+            android:fillColor="#E0E0E0"
+            android:pathData="M54,54m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0
+                      M54,34l0,-10a10,10 0,0 1,10 10a10,10 0,0 1,-10 10l0,-10
+                      M54,34l-15,0a5,5 0,0 0,-5 5l0,20a5,5 0,0 0,5 5l20,0a5,5 0,0 0,5 -5l0,-10a5,5 0,0 0,-5 -5l-10,0
+                      M44,44l0,5a5,5 0,0 0,5 5l10,0a5,5 0,0 0,5 -5l0,-5
+                      M44,44l0,5a5,5 0,0 0,5 5l10,0a5,5 0,0 0,5 -5l0,-5
+                      M44,44l0,5a5,5 0,0 0,5 5l10,0a5,5 0,0 0,5 -5l0,-5
+                      M44,44l0,5a5,5 0,0 0,5 5l10,0a5,5 0,0 0,5 -5l0,-5
+                      " />
+
+    </group>
+</vector>
