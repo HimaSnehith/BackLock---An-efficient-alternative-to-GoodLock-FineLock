@@ -30,29 +30,21 @@ Robust Error Handling: Clear, user-friendly error screens for network issues, wi
 
 📸 Screenshots
 <div align="center">
+![Screenshot_20250812_192937_badlock](https://github.com/user-attachments/assets/4a89d92e-6291-40fd-b9c8-541fa89dd726)
 
 Main Screen
+![Screenshot_20250812_192932_badlock](https://github.com/user-attachments/assets/ac44cc88-fc40-40db-8a26-60b812f0b99b)
 
 Updates Tab
 
-<!-- Add a URL to your screenshot here. -->
-
-<!-- Add a URL to your screenshot here. -->
-
-
+![Screenshot_20250812_192927_badlock](https://github.com/user-attachments/assets/d867f248-d3a9-4875-a059-d9ebb9e3f3f0)
 
 
 
 </div>
 
 🚀 Download
-Get the latest version of Badlock from the Releases page.
-
-<!-- IMPORTANT: Replace YourUsername/YourRepoName with your actual GitHub username and repo name! -->
-
-<a href="https://www.google.com/search?q=https://github.com/YourUsername/YourRepoName/releases/latest/download/app-release.apk">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Download-Latest%2520APK-brightgreen%3Fstyle%3Dfor-the-badge%26logo%3Dandroid" alt="Download APK">
-</a>
+Get the latest version of Badlock from the Releases page or Master branch
 
 🛠️ Built With
 Kotlin - Official language for Android development.
