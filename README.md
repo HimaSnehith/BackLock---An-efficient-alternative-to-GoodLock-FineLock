@@ -1,11 +1,5 @@
 # BackLock---An-efficient-alternative-to-GoodLock-FineLock
 
-<div align="center">
-
-<!-- Add a URL to your app icon here. You can upload it to your repo. -->
-
-<img src="URL_TO_YOUR_APP_ICON_512x512.png" alt="Badlock Logo" width="150"/>
-
 Badlock
 Reimagining the Good Lock experience.
 
@@ -30,7 +24,6 @@ Robust Error Handling: Clear, user-friendly error screens for network issues, wi
 
 📸 Screenshots
 <div align="center">
-![Screenshot_20250812_192937_badlock](https://github.com/user-attachments/assets/4a89d92e-6291-40fd-b9c8-541fa89dd726)
 
 Main Screen
 ![Screenshot_20250812_192932_badlock](https://github.com/user-attachments/assets/ac44cc88-fc40-40db-8a26-60b812f0b99b)
