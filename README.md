@@ -1,6 +1,6 @@
 <div align="center">
 
-#Badlock#
+#Badlock
 
 ![SmartSelect_20250814_230744_One UI Home](https://github.com/user-attachments/assets/0e9e5b89-7dc5-4962-878e-3f78504e381b)
 
