@@ -1,50 +1,57 @@
-# BackLock---An-efficient-alternative-to-GoodLock-FineLock
+<div align="center">
+
+![SmartSelect_20250814_230744_One UI Home](https://github.com/user-attachments/assets/0e9e5b89-7dc5-4962-878e-3f78504e381b)
+
+<img src="URL_TO_YOUR_APP_ICON_512x512.png" alt="Badlock Logo" width="150"/>
 
 Badlock
 Reimagining the Good Lock experience.
 
 An alternative, user-friendly client for managing Samsung Good Lock modules, built with Jetpack Compose for a modern and fluid user experience.
 
-<!-- IMPORTANT: Replace YourUsername/YourRepoName with your actual GitHub username and repo name! -->
-
 </div>
 
 ✨ Features
-Smart Update Checker: Reliably checks for new versions of your installed modules using the official APKMirror RSS feed.
+Smart Update Checker: Reliably checks for new versions of your installed modules using the official APKMirror RSS feed with a robust HTML fallback.
 
-Modern UI: A clean, futuristic interface designed for one-handed use, with a beautiful dark theme that integrates seamlessly with your system.
+Instant Loading: App loads instantly using cached data while refreshing in the background.
 
-Performance First: Optimized for a buttery-smooth 120Hz scrolling experience by leveraging stable keys and remembered state in Compose.
+Automatic Refresh: Automatically checks for newly installed apps when you return to the app.
 
-Updates Hub: A dedicated tab that clearly lists all modules with available updates, complete with a badge counter for at-a-glance info.
+Modern UI: A clean, futuristic interface designed for one-handed use, with a beautiful dark theme.
 
-Intelligent Sorting: Installed and updatable modules are always sorted to the top of the list for quick access.
+Performance First: Optimized for a buttery-smooth 120Hz scrolling experience.
 
-Robust Error Handling: Clear, user-friendly error screens for network issues, with an easy retry option.
+Updates Hub: A dedicated tab that clearly lists all modules with available updates, complete with a badge counter.
+
+App Info Shortcut: A one-tap shortcut to the Android App Info screen for easy management of installed modules.
 
 📸 Screenshots
 <div align="center">
 
 Main Screen
-![Screenshot_20250812_192932_badlock](https://github.com/user-attachments/assets/ac44cc88-fc40-40db-8a26-60b812f0b99b)
+![Screenshot_20250814_225016_badlock](https://github.com/user-attachments/assets/c64766a6-998e-4761-81f2-dc604128e859)
+![Screenshot_20250814_225022_badlock](https://github.com/user-attachments/assets/67a65a1c-f3c1-4879-8bd5-3ec83fd4020d)
 
 Updates Tab
+![Screenshot_20250814_225026_badlock](https://github.com/user-attachments/assets/5b73f8bf-da8a-4356-900d-d40c7bff23a8)
 
-![Screenshot_20250812_192927_badlock](https://github.com/user-attachments/assets/d867f248-d3a9-4875-a059-d9ebb9e3f3f0)
+
+
 
 
 
 </div>
 
 🚀 Download
-Get the latest version of Badlock from the Releases page or Master branch
+Get the latest version of Badlock from the Releases page.
+
+
 
 🛠️ Built With
 Kotlin - Official language for Android development.
 
 Jetpack Compose - Modern toolkit for building native Android UI.
-
-Jsoup - For robust HTML and XML parsing.
 
 Coroutines - For asynchronous programming and a responsive UI.
 
