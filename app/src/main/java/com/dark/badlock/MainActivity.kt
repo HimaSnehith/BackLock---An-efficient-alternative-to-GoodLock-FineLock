@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,6 +19,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,6 +28,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Refresh
@@ -37,10 +40,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import com.dark.badlock.ui.theme.BadlockTheme
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -59,7 +63,7 @@ import org.jsoup.Jsoup
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-// --- UI THEME - FUTURISTIC & MODERN ---
+// --- UI THEME & COLORS ---
 val DarkBackground = Color(0xFF10121A)
 val DarkSurface = Color(0xFF1C1E28)
 val PrimaryAccent = Color(0xFF8A2BE2) // Electric Blue-Violet
@@ -67,6 +71,19 @@ val GreenAccent = Color(0xFF00FFA3) // Neon Mint
 val UpdateYellow = Color(0xFFFFD600) // Vibrant Yellow
 val TextPrimary = Color.White.copy(alpha = 0.9f)
 val TextSecondary = Color.White.copy(alpha = 0.7f)
+
+// FIXED: The BadlockTheme function was missing. It has been re-added here.
+@Composable
+fun BadlockTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    // Using a custom color scheme instead of the full Material 3 for vibrancy
+    MaterialTheme(
+        typography = Typography(),
+        content = content
+    )
+}
 
 
 // --- DATA & STATE CLASSES ---
@@ -94,6 +111,10 @@ sealed interface ModuleState {
     object Loading : ModuleState
     data class Success(val modules: Map<String, List<InstalledModule>>) : ModuleState
     data class Error(val message: String) : ModuleState
+}
+
+object ModuleCache {
+    var lastSuccessState: ModuleState.Success? = null
 }
 
 
@@ -136,7 +157,7 @@ suspend fun fetchLatestVersionFromRssFeed(url: String): String? {
     val feedUrl = if (url.endsWith("/")) "${url}feed/" else "$url/feed/"
     return withContext(Dispatchers.IO) {
         try {
-            val doc = Jsoup.connect(feedUrl).timeout(15000).get()
+            val doc = Jsoup.connect(feedUrl).timeout(10000).get()
             val title = doc.selectFirst("item > title")?.text()
             if (title.isNullOrEmpty()) return@withContext null
             val regex = """\s(\d+(\.\d+)+(\.\d+)*)""".toRegex()
@@ -147,6 +168,22 @@ suspend fun fetchLatestVersionFromRssFeed(url: String): String? {
         }
     }
 }
+
+suspend fun fetchLatestVersionFromHtmlFallback(url: String): String? {
+    return withContext(Dispatchers.IO) {
+        try {
+            val mainDoc = Jsoup.connect(url).timeout(15000).get()
+            val latestVersionLinkElement = mainDoc.selectFirst("div.list-row a.fontBlack") ?: return@withContext null
+            val latestVersionPageUrl = "https://www.apkmirror.com" + latestVersionLinkElement.attr("href")
+            val versionDoc = Jsoup.connect(latestVersionPageUrl).timeout(15000).get()
+            versionDoc.selectFirst(".appspec-value")?.text()?.trim()?.split(" ")?.first()
+        } catch (e: Exception) {
+            Log.e("BadlockFetch", "FAIL: HTML Fallback. An error occurred for URL: $url", e)
+            null
+        }
+    }
+}
+
 
 fun isUpdateAvailable(moduleName: String, installedVersion: String?, latestVersion: String?): Boolean {
     if (installedVersion.isNullOrEmpty() || latestVersion.isNullOrEmpty()) return false
@@ -175,7 +212,10 @@ suspend fun loadData(context: Context): ModuleState {
                     async {
                         val latestVersion = try {
                             fetchLatestVersionFromRssFeed(moduleInfo.apkMirrorMainPage)
-                        } catch (e: Exception) { null }
+                        } catch (e: Exception) {
+                            Log.w("BadlockFetch", "RSS fetch failed for ${moduleInfo.name}, trying HTML fallback.", e)
+                            fetchLatestVersionFromHtmlFallback(moduleInfo.apkMirrorMainPage)
+                        }
 
                         val isInstalled = try {
                             packageManager.getPackageInfo(moduleInfo.packageName, 0); true
@@ -218,7 +258,9 @@ suspend fun loadData(context: Context): ModuleState {
                             .thenBy { it.name }
                     )
                 }
-            ModuleState.Success(groupedAndSorted)
+            val successState = ModuleState.Success(groupedAndSorted)
+            ModuleCache.lastSuccessState = successState
+            successState
         } catch (e: Exception) {
             when(e) {
                 is UnknownHostException, is SocketTimeoutException -> ModuleState.Error("Could not connect to server. Please check your internet connection.")
@@ -258,23 +300,31 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
-    var moduleState by remember { mutableStateOf<ModuleState>(ModuleState.Loading) }
+    var moduleState by remember { mutableStateOf<ModuleState>(ModuleCache.lastSuccessState ?: ModuleState.Loading) }
 
     fun refreshData() {
-        coroutineScope.launch {
+        if (ModuleCache.lastSuccessState == null) {
             moduleState = ModuleState.Loading
+        }
+        coroutineScope.launch {
             moduleState = loadData(context)
         }
     }
 
-    LaunchedEffect(Unit) {
-        refreshData()
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
-    // OPTIMIZATION: Create stable, remembered lambdas for all actions.
-    // This prevents them from being recreated for every item during scroll,
-    // which is the primary cause of jank.
     val onModuleClick = remember<(InstalledModule) -> Unit> {
         { module ->
             if (module.isInstalled) launchModule(context, module)
@@ -283,6 +333,9 @@ fun MainScreen() {
     }
     val onWebsiteClick = remember<(String) -> Unit> {
         { url -> openUrl(context, url) }
+    }
+    val onAppInfoClick = remember<(String) -> Unit> {
+        { packageName -> openAppInfo(context, packageName) }
     }
 
     Scaffold(
@@ -327,12 +380,12 @@ fun MainScreen() {
                                 "Updates" -> updatableModules
                                 else -> state.modules[pageTitle] ?: emptyList()
                             }
-                            // OPTIMIZATION: Pass the stable lambdas to the list.
                             ModuleList(
                                 modules = modulesToShow,
                                 showEmptyMessage = (pageTitle == "Updates"),
                                 onModuleClick = onModuleClick,
-                                onWebsiteClick = onWebsiteClick
+                                onWebsiteClick = onWebsiteClick,
+                                onAppInfoClick = onAppInfoClick
                             )
                         }
 
@@ -385,13 +438,13 @@ fun MainScreen() {
     }
 }
 
-// OPTIMIZATION: ModuleList now accepts the stable lambdas to pass down.
 @Composable
 fun ModuleList(
     modules: List<InstalledModule>,
     showEmptyMessage: Boolean = false,
     onModuleClick: (InstalledModule) -> Unit,
-    onWebsiteClick: (String) -> Unit
+    onWebsiteClick: (String) -> Unit,
+    onAppInfoClick: (String) -> Unit
 ) {
     if (modules.isEmpty() && showEmptyMessage) {
         Column(
@@ -419,34 +472,33 @@ fun ModuleList(
                 ModuleCard(
                     module = module,
                     onModuleClick = { onModuleClick(module) },
-                    onWebsiteClick = { onWebsiteClick(module.apkMirrorMainPage) }
+                    onWebsiteClick = { onWebsiteClick(module.apkMirrorMainPage) },
+                    onAppInfoClick = { onAppInfoClick(module.packageName) }
                 )
             }
         }
     }
 }
 
-// OPTIMIZATION: ModuleCard now accepts stable lambdas instead of creating its own.
 @Composable
 fun ModuleCard(
     module: InstalledModule,
     onModuleClick: () -> Unit,
-    onWebsiteClick: () -> Unit
+    onWebsiteClick: () -> Unit,
+    onAppInfoClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        modifier = Modifier.fillMaxWidth()
+        colors = CardDefaults.cardColors(containerColor = DarkSurface.copy(alpha = 0.8f)),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onModuleClick)
     ) {
         Row(
-            modifier = Modifier
-                .clickable(onClick = onModuleClick)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
-                    .background(brush = Brush.verticalGradient(colors = listOf(PrimaryAccent.copy(alpha = 0.3f), Color.Transparent))),
+                    .background(DarkBackground),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -481,6 +533,11 @@ fun ModuleCard(
                 }
                 IconButton(onClick = onWebsiteClick) {
                     Icon(Icons.Default.Public, contentDescription = "Go to Website", tint = TextSecondary)
+                }
+                if (module.isInstalled) {
+                    IconButton(onClick = onAppInfoClick) {
+                        Icon(Icons.Default.Info, contentDescription = "App Info", tint = TextSecondary)
+                    }
                 }
             }
         }
@@ -549,5 +606,15 @@ fun openUrl(context: Context, url: String) {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     } catch (e: ActivityNotFoundException) {
         Toast.makeText(context, "No browser found.", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun openAppInfo(context: Context, packageName: String) {
+    try {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        intent.data = Uri.fromParts("package", packageName, null)
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "Could not open app settings.", Toast.LENGTH_SHORT).show()
     }
 }
