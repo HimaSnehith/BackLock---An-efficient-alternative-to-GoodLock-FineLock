@@ -24,7 +24,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -81,6 +81,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.1")
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // --- Compose Dependencies ---
     // Core Compose libraries.

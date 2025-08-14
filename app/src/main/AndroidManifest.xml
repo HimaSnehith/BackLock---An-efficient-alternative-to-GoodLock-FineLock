@@ -1,42 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- REQUIRED FOR ANDROID 11 (API 30) AND ABOVE -->
-    <!-- This tag explicitly declares which other packages your app needs to see. -->
-    <queries>
-        <package android:name="com.samsung.android.goodlock" />
-        <package android:name="com.samsung.android.app.routine2" />
-        <package android:name="com.samsung.android.app.routineplus" />
-        <package android:name="com.samsung.systemui.lockstar" />
-        <package android:name="com.samsung.android.themedesigner" />
-        <package android:name="com.samsung.android.sidegesturepad" />
-        <package android:name="com.samsung.android.edgelightingplus" />
-        <package android:name="com.samsung.android.app.edgetouch" />
-        <package android:name="com.samsung.android.pentastic" />
-        <package android:name="com.samsung.android.keyscafe" />
-        <package android:name="com.samsung.android.qstuner" />
-        <package android:name="com.samsung.android.statsd" />
-        <package android:name="com.android.samsung.icebox" />
-        <package android:name="com.samsung.android.memoryguardian" />
-        <package android:name="com.samsung.android.multistar" />
-        <package android:name="com.samsung.android.pluginrecents" />
-        <package android:name="com.samsung.android.app.homestar" />
-        <package android:name="com.samsung.android.app.clockface" />
-        <package android:name="com.samsung.android.app.galaxyregistry" />
-        <package android:name="com.samsung.android.app.goodcatch" />
-        <package android:name="com.samsung.android.displayassistant" />
-        <package android:name="com.samsung.android.wonderland.wallpaper" />
-        <package android:name="com.samsung.android.app.cameraassistant" />
-        <package android:name="com.android.samsung.batteryusage" />
-        <package android:name="com.samsung.android.appbooster" />
-        <package android:name="com.samsung.android.thermalguardian" />
-        <package android:name="com.samsung.android.mediaguardian" />
-        <package android:name="com.samsung.android.app.captureplugin" />
-        <package android:name="com.samsung.android.soundassistant" />
-        <package android:name="com.samsung.systemui.notilus" />
-    </queries>
+    <!-- REQUIRED: For checking for module updates online -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- REQUIRED: Allows the app to see and launch other Good Lock modules -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:allowBackup="true"
@@ -47,11 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Badlock"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Badlock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,17 +31,5 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
-
     </application>
-
 </manifest>
