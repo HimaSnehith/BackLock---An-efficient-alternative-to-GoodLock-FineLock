@@ -1,10 +1,9 @@
 <div align="center">
 
+Badlock
+
 ![SmartSelect_20250814_230744_One UI Home](https://github.com/user-attachments/assets/0e9e5b89-7dc5-4962-878e-3f78504e381b)
 
-<img src="URL_TO_YOUR_APP_ICON_512x512.png" alt="Badlock Logo" width="150"/>
-
-Badlock
 Reimagining the Good Lock experience.
 
 An alternative, user-friendly client for managing Samsung Good Lock modules, built with Jetpack Compose for a modern and fluid user experience.
