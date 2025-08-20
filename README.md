@@ -28,14 +28,17 @@ App Info Shortcut: A one-tap shortcut to the Android App Info screen for easy ma
 📸 Screenshots
 <div align="center">
 
-Main Screen
-![Screenshot_20250814_225016_badlock](https://github.com/user-attachments/assets/c64766a6-998e-4761-81f2-dc604128e859)
-![Screenshot_20250814_225022_badlock](https://github.com/user-attachments/assets/67a65a1c-f3c1-4879-8bd5-3ec83fd4020d)
+Main 
+
+![Screenshot_20250818_191004_badlock](https://github.com/user-attachments/assets/b56d8995-8385-4162-b922-8df04f1650eb)
+Screen
+![Screenshot_20250820_085908_badlock](https://github.com/user-attachments/assets/2d8f18eb-730f-456c-8b0d-653c27ab18e4)
+
 
 Updates Tab
-![Screenshot_20250814_225026_badlock](https://github.com/user-attachments/assets/5b73f8bf-da8a-4356-900d-d40c7bff23a8)
 
 
+![Screenshot_20250820_085914_badlock](https://github.com/user-attachments/assets/ab9e610a-d298-45fc-9b8c-a81db7aae674)
 
 
 
@@ -53,6 +56,11 @@ Kotlin - Official language for Android development.
 Jetpack Compose - Modern toolkit for building native Android UI.
 
 Coroutines - For asynchronous programming and a responsive UI.
+
+Special Thanks and Original application holders
+
+Samsung Electronics 
+Apk Mirror
 
 ⚠️ Disclaimer
 This application, Badlock, is an independent, fan-made project and is not affiliated with, endorsed, or sponsored by Samsung or APKMirror in any way.
