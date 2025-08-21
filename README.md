@@ -73,3 +73,7 @@ This app is provided for educational and experimental purposes. It does not host
 
 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+Buy Me a Coffee
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z01JZ84F)
